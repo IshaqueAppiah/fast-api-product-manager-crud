@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: fastapi_dev_postgres
+    environment:
+      POSTGRES_DB: telusko
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - fastapi_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d telusko"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fastapi_dev_backend
+    environment:
+      DATABASE_URL: postgresql://postgres:admin@db:5432/telusko
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    networks:
+      - fastapi_network
+    depends_on:
+      db:
+        condition: service_healthy
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  # HTML Frontend (Development)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.html
+    container_name: fastapi_dev_frontend
+    ports:
+      - "3000:80"
+    networks:
+      - fastapi_network
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  fastapi_network:
+    driver: bridge
