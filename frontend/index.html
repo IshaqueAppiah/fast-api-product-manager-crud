@@ -16,6 +16,8 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
         }
         
         .container {
@@ -114,8 +116,8 @@
         }
         
         .btn-primary:hover {
-            transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            transform: scale(1.02);
         }
         
         .btn-secondary {
@@ -125,7 +127,7 @@
         
         .btn-secondary:hover {
             background: #5a6268;
-            transform: translateY(-2px);
+            transform: scale(1.02);
         }
         
         .btn-danger {
@@ -137,7 +139,7 @@
         
         .btn-danger:hover {
             background: #c82333;
-            transform: translateY(-1px);
+            transform: scale(1.02);
         }
         
         .products-section h2 {
@@ -162,8 +164,8 @@
         }
         
         .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
         
         .product-card h3 {
@@ -196,6 +198,19 @@
             padding: 15px;
             border-radius: 8px;
             font-weight: 500;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        
+        .message-container {
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #message {
+            transition: opacity 0.3s ease;
+            width: 100%;
         }
         
         .success {
@@ -214,6 +229,14 @@
             text-align: center;
             padding: 40px;
             color: #666;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #productsList {
+            min-height: 200px;
         }
         
         .loading::after {
@@ -331,7 +354,9 @@
             </div>
             
             <!-- Messages -->
-            <div id="message"></div>
+            <div class="message-container">
+                <div id="message"></div>
+            </div>
             
             <!-- Products Section -->
             <div class="products-section">
@@ -481,12 +506,22 @@
 
         function showMessage(message, type) {
             const messageDiv = document.getElementById('message');
-            messageDiv.innerHTML = `<div class="message ${type}">${escapeHtml(message)}</div>`;
             
-            // Clear message after 5 seconds
+            // Clear any existing message first
+            messageDiv.style.opacity = '0';
+            
             setTimeout(() => {
-                messageDiv.innerHTML = '';
-            }, 5000);
+                messageDiv.innerHTML = `<div class="message ${type}">${escapeHtml(message)}</div>`;
+                messageDiv.style.opacity = '1';
+                
+                // Clear message after 5 seconds with fade out
+                setTimeout(() => {
+                    messageDiv.style.opacity = '0';
+                    setTimeout(() => {
+                        messageDiv.innerHTML = '';
+                    }, 300);
+                }, 5000);
+            }, 100);
         }
 
         function escapeHtml(text) {

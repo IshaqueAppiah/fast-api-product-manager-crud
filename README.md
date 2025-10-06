@@ -46,12 +46,21 @@ git clone https://github.com/IshaqueAppiah/fast-api-product-manager-crud.git
 cd fast-api-product-manager-crud
 ```
 
-### 2. Start the Application
+### 2. Setup Environment Variables
+```bash
+# Copy the example environment file
+cp .env.docker.example .env.docker
+
+# Edit .env.docker with your preferred database credentials
+# The default values will work for local development
+```
+
+### 3. Start the Application
 ```bash
 docker-compose -f docker-compose.dev.yml up -d
 ```
 
-### 3. Access the Application
+### 4. Access the Application
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:8000
 - **API Documentation**: http://localhost:8000/docs
@@ -100,9 +109,28 @@ fast-api-product-manager-crud/
 ## 🔧 Development
 
 ### Environment Variables
+
+#### Docker Environment
+Copy the example environment file and customize it:
+```bash
+cp .env.docker.example .env.docker
+```
+
+The `.env.docker` file contains:
+```env
+# Database Configuration
+POSTGRES_DB=your_database_name
+POSTGRES_USER=your_username  
+POSTGRES_PASSWORD=your_secure_password
+
+# Backend Configuration
+DATABASE_URL=postgresql://your_username:your_secure_password@db:5432/your_database_name
+```
+
+#### Backend Development
 Create a `.env` file in the `backend` directory:
 ```env
-DATABASE_URL=postgresql://postgres:admin@db:5432/telusko
+DATABASE_URL=postgresql://postgres:admin@localhost:5432/telusko
 ```
 
 ### Running Locally (without Docker)
